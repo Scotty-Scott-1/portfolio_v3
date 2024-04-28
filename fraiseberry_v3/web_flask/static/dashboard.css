@@ -1,0 +1,141 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	height: 120vh;
+	background: linear-gradient(to bottom, #d6849c, #f3efe4);
+
+}
+
+header {
+	display: flex;
+	width: 100%;
+	max-height: fit-content;
+	justify-content: space-between;
+	align-items: center;
+}
+
+
+header img {
+	max-height: 100px;
+	max-width: 100px;
+}
+
+#title {
+	font-size: xx-large;
+	margin: 0;
+}
+
+.fraise {
+	justify-content: center;
+	display: flex;
+}
+.profilepic_icon {
+	justify-content: center;
+}
+
+
+#corner_pic {
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+}
+
+.mail {
+	justify-content: flex-start;
+}
+
+
+
+main {
+	flex-grow: 1;
+	width: 100%;
+	display: flex;
+	justify-content: left;
+}
+
+footer {
+	flex-grow: 1;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	bottom: 0;
+	position: fixed;
+	background-color: #cbd7dad3;
+}
+
+footer .icon {
+	display: flex;
+}
+
+.icon {
+	margin: 6px;
+	height: fit-content;
+	width: fit-content;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.icon img {
+	height: 64px;
+	width: 64px;
+}
+
+.popcontainter {
+	position: relative;
+	width: fit-content;
+}
+
+#pp {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 50px;
+	width: 50px;
+	border: none;
+	cursor: pointer;
+	background-color: transparent;
+}
+
+#popover {
+	position: absolute;
+	background-color: bisque;
+	border: 1px solid skyblue;
+	display: none;
+	top: 10;
+	right: 10px;
+	}
+
+.hidden {
+	display: none;
+	}
+
+ul li {
+	padding-right: 5px;
+	justify-content: center;
+	margin-right: 10px;
+	}
+
+.marck-script-regular {
+	font-family: "Marck Script", cursive;
+	font-weight: 400;
+	font-style: normal;
+  }
+
+.tooltip {
+	display: flex;
+	margin: 0;
+}
+
+#ref {
+	bottom: 0;
+	position: fixed;
+}
+
+@media only screen and (max-width: 600px) {
+	#ref {
+		bottom: 15%;
+		position: fixed;
+	}
+
+}

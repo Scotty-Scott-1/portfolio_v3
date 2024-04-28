@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+		<link rel='stylesheet' href="../static/messages.css">
+		<script src="../static/dynamic/message.js"></script>
+		<script src="https://cdn.lordicon.com/lordicon.js"></script>
+		<title>Get started</title>
+	</head>
+
+		<body class="container">
+			<header>
+				<lord-icon id="home"
+					src="https://cdn.lordicon.com/epietrpn.json"
+					trigger="hover">
+				</lord-icon>
+			</header>
+			<p class="hidden" id="varThisUserID">{{ this_user_id }}</p>
+			<p class="hidden" id="varMatchID">{{ match_id }}</p>
+
+			<main>
+				<p id="match_name">{{ match_user_name }}</p>
+
+				<div id="message_container">
+
+					{% for dm in combined %}
+					<div class="dm">
+						<p class="text">{{ dm.content }}</p>
+						<p class="datetime">{{ dm.sent_at }}</p>
+						<p class="hidden" id="senderID">{{ dm.sender_id }}</p>
+					</div>
+					{% endfor %}
+
+				</div>
+				<div id="typing">
+					<textarea name="" id="text_area" cols="30" rows="5"></textarea>
+					<lord-icon id="send_icon"
+						src="https://cdn.lordicon.com/nqisoomz.json"
+						trigger="click"
+						style="width:70px;height:70px">
+					</lord-icon>
+				</div>
+			</main>
+			<footer>
+
+			</footer>
+		</body>
+
+
+		</html>

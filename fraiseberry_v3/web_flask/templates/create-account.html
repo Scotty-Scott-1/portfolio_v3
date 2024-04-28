@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+		<link rel='stylesheet' href="../static/create_account.css">
+
+		<title>Get started</title>
+	</head>
+
+
+
+		<body class="container">
+			<header>
+				<img class="header-item-img" src="../static/images/icon.png" alt="">
+				<h1 class="header-item">Fraiseberry</h1>
+			</header>
+			<main>
+
+		<div class="box">
+			<div class="label-box">
+				<p>Name</p>
+				<p>Last name</p>
+				<p>Date of birth</p>
+				<p>email</p>
+				<p>Username</p>
+				<p>Password</p>
+				<p>Gender</p>
+			</div>
+			<div class="input-box">
+				<input type="text" placeholder="enter your name" name="first_name">
+				<input type="text" placeholder="enter your last name" name="last_name">
+				<input type="date" placeholder="enter your date of birth" name="date_of_birth" max="{{ min_dob.strftime('%Y-%m-%d') }}">
+				<input type="text" placeholder="example@example.com" name="email">
+				<input type="text" placeholder="enter a username" name="user_name">
+				<input type="password" name="password">
+				<select class="input" name="gender" id="gender">
+					<option value="Male">Male</option>
+					<option value="Female">Female</option>
+					<option value="Non binary">Non binary</option>
+					<option value="Other">Other</option>
+				</select>
+
+			</div>
+		</div>
+
+		<button class="tweet-button" onclick="makeRequest()">Sign up</button>
+		<p id="passwordtip">password must contain 8 characters; 1 captial letter, 1 special character</p>
+				<script>
+					function makeRequest() {
+
+						const form_data = {
+							first_name: document.querySelector('input[name="first_name"]').value,
+							last_name: document.querySelector('input[name="last_name"]').value,
+							date_of_birth: document.querySelector('input[name="date_of_birth"]').value,
+							email: document.querySelector('input[name="email"]').value,
+							user_name: document.querySelector('input[name="user_name"]').value,
+							user_password: document.querySelector('input[name="password"]').value,
+							gender: document.querySelector('#gender').value
+						};
+
+
+
+						fetch("/signup", {
+							method: "POST",
+							body: JSON.stringify(form_data),
+							headers: {"Content-Type": "application/json"}
+
+						})
+
+						.then(result => {
+							return result.text();
+						})
+						.then(result2 => {
+							console.log(result2);
+							if (result2 == "must be over 18") {
+								alert("must be over 18")
+							}
+							if (result2 == "User name already exists") {
+								alert("User name already exists")
+							}
+							if (result2 == "email already in use") {
+								alert("email already in use")
+							}
+							if (result2 == "email not valid") {
+								alert("email not valid")
+							}
+							if (result2 == "form incomplete") {
+								alert("form incomplete")
+							}
+							if (result2 == "password not valid") {
+								alert("password must contain 1 uppercase character, 1 special character, 1 number. password must be minimum 8 characters")
+							}
+
+
+
+							if (result2 == "created new user") {
+								window.location.href = "/signin"
+							}
+						});
+					}
+				</script>
+			</main>
+			<footer>
+
+			</footer>
+		</body>
+
+
+		</html>
