@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 
 	mailIcon.addEventListener("click", () => {
-		window.location.href="/new_match/"
+		window.location.href="/basicchat/"
 	});
 
 	messageIcon.addEventListener("click", () => {

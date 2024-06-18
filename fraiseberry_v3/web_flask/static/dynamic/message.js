@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 	const dms = document.querySelectorAll(".dm");
-	const varThisUserID = document.getElementById("varThisUserID");
-	const varMatchID = document.getElementById("varMatchID");
+	const varThisUserID = document.getElementById("varThisUserID").textContent;
+	const varMatchID = document.getElementById("varMatchID").textContent;
 	const send_icons = document.getElementById("send_icon");
 	const text_area = document.getElementById("text_area");
 	const home = document.getElementById("home");
@@ -12,51 +12,106 @@ document.addEventListener("DOMContentLoaded", function() {
 	// Adds a class to add styles //
 	dms.forEach(dm => {
 		const senderID = dm.querySelector("#senderID");
-		if (senderID.textContent == varThisUserID.textContent) {
+		if (senderID.textContent == varThisUserID) {
 			dm.classList.add('position_this_user')
 		}
-		if (senderID.textContent == varMatchID.textContent) {
+		if (senderID.textContent == varMatchID) {
 			dm.classList.add('position_other_user')
 		}
-
 	});
 
-	// Send the message content server side and then refresh the page //
-	send_icons.addEventListener("click", () => {
-		const id = varMatchID.textContent
+	const socket = io(); // Connect to the server
 
-		const form_data = {
-			text: text_area.value
-		};
-		fetch(`/message/?match_id=${id}`, {
-			method: "POST",
-			body: JSON.stringify(form_data),
-			headers: {"Content-Type": "application/json"}
-		})
-		.then(response => {
-			const match_id = varMatchID.textContent
-			fetch(`/message/?match_id=${match_id}`, {
-				method: "GET",
-				headers: {"Content-Type": "application/json"}
-			})
+	socket.emit("join", {
+		match_id: varMatchID
+	});
+	console.log("joins");
 
-			.then(response => {
-				window.location.href = response.url;
+	send_icons.addEventListener('click', () => {
+		const message = text_area.value
+		console.log(message)
+		console.log("clicked");
+		console.log(varThisUserID);
+		console.log(varMatchID);
+
+		if (message.trim()) {  // Send only messages with non-empty content
+			socket.emit('message',
+			{
+				message: message,
+				sender_id: varThisUserID,
+				receiver_id: varMatchID,
 			});
-		});
+			text_area.value = ''; // Clear input field after sending
+		}
+	});
+
+	socket.on('message', (message) => {
+		console.log(message)
+
+		const message_content = message["message"];
+		const message_sender = message["sender_id"];
+		const message_reciever = message["receiver_id"];
+
+		console.log(message_content)
+		console.log(message_sender)
+		console.log(message_reciever)
+
+		const dm = document.createElement('div');
+		dm.classList.add('dm');
+
+		const textElement = document.createElement('p');
+		textElement.classList.add('text');
+		textElement.textContent = message_content
+
+		const datetimeElement = document.createElement('p');
+		datetimeElement.classList.add('datetime');
+
+		const now = new Date();
+		const hours = now.getHours();
+		const minutes = String(now.getMinutes()).padStart(2, '0'); // Ensure two-digit format
+
+		const currentTime = `${hours}:${minutes}`;
+
+		console.log('Current time:', currentTime);
+		datetimeElement.textContent = currentTime;
+
+
+		const hiddenElement = document.createElement('p');
+		hiddenElement.classList.add('hidden');  // Add class for styling
+		hiddenElement.textContent = message_sender;
+		hiddenElement.id = "senderID"
+		if (hiddenElement.textContent == varThisUserID)
+			{
+				dm.classList.add('position_this_user')
+			}
+		if (hiddenElement.textContent == varMatchID)
+			{
+				dm.classList.add("position_other_user")
+			}
+
+		// Append child elements to the main div
+		if (dm) {
+			dm.appendChild(textElement);
+			dm.appendChild(datetimeElement);
+			dm.appendChild(hiddenElement);
+		}
+
+
+		const messageContainer = document.getElementById('message_container');
+		if (messageContainer) {
+			messageContainer.appendChild(dm);
+		}
+
+
 
 	});
 
-	home.addEventListener("click", () => {
-		window.location.href = '/dashboard/';
-	});
 
-	const refreshtimer = setTimeout(refresh, refreshTime);
-
-	// Refresh the page after a certain time //
-	function refresh () {
-		window.location.reload();
-	}
+	home.addEventListener("click", () =>
+		{
+			window.location.href = '/dashboard/';
+		}
+	)
 
 
 });

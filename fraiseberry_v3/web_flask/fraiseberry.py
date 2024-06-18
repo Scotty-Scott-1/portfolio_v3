@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, redirect, session as logged_i
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from sqlalchemy import or_, desc, asc
+from sqlalchemy import or_, desc, asc, and_
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from create_tables import Users
@@ -19,6 +19,8 @@ from geopy.distance import geodesic
 from email_validator import validate_email
 from password_strength import PasswordPolicy
 from flask_mail import Mail, Message
+
+from flask_socketio import SocketIO, emit, send, join_room
 
 #Flask/mail/SQL Achemy configuration
 app = Flask(__name__, static_url_path='/static')
@@ -41,7 +43,8 @@ app.config['MAIL_PASSWORD'] = argv[6]
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
-mail= Mail(app)
+mail = Mail(app)
+socketio = SocketIO(app)
 
 # log out fuction. Clears session cookie.
 @app.route('/', strict_slashes=False)
@@ -537,6 +540,77 @@ def view_matches():
 			return({"success": "deleted this match"})
 
 
+
+@socketio.on('message')
+def handle_message(message):
+	print()
+	print('Received message:', message)
+	print("message: {}\nsender: {}\nreceiver: {}\n".format(message["message"], message["sender_id"], message["receiver_id"]))
+
+	with Session() as session:
+		match = session.query(Matches).filter(
+            and_(
+                or_(
+                    Matches.user_1_id == message["sender_id"],
+                    Matches.user_2_id == message["sender_id"]
+                ),
+                or_(
+                    Matches.user_1_id == message["receiver_id"],
+                    Matches.user_2_id == message["receiver_id"]
+                )
+            )
+        ).first()
+
+	if match is not None:
+		print("match id = {}".format(match.match_id))
+		room_id = str(match.match_id)
+		print(type(room_id))
+
+		emit('message', message, room=room_id)
+	else:
+		print("No matching room found for the given sender and receiver IDs")
+
+
+	with Session() as session:
+		new_message = Messages()
+		new_message.content = message["message"]
+		new_message.receiver_id = message["receiver_id"]
+		new_message.sender_id = message["sender_id"]
+		session.add(new_message)
+		session.commit()
+
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+@socketio.on('join')
+def handle_join(match_id):
+
+	with Session() as session:
+		match = session.query(Matches).filter(
+   		 and_(
+    		or_(
+        		Matches.user_1_id == match_id["match_id"],
+        		Matches.user_2_id == match_id["match_id"]
+    		),
+    		or_(
+        		Matches.user_1_id == logged_in_session.get("user_id"),
+        		Matches.user_2_id == logged_in_session.get("user_id")
+    		)
+    	)
+	).first()
+
+	room_id = str(match.match_id)
+	join_room(room_id)
+	print("::::::::::::")
+	print('Client joined room: {}'.format(room_id))
+	print("::::::::::::")
+
 # On GET: Load the latest 200 messages from both users
 # On Post: Add a ,ew message instance
 @app.route('/message/', strict_slashes=False, methods=['GET', 'POST'])
@@ -555,6 +629,7 @@ def messsage ():
 			dms_from_match = session.query(Messages).filter(Messages.sender_id == match_id ,Messages.receiver_id == this_user)
 			combined = dms_from_user.union(dms_from_match).order_by(asc(Messages.sent_at)).limit(200).all()
 
+
 		return render_template('messages.html', match_user_name=match_user_name, match_id=match_id, this_user_id=this_user, combined=combined)
 	if request.method == "POST":
 
@@ -568,6 +643,7 @@ def messsage ():
 			new_message.content = form_data["text"]
 			session.add(new_message)
 			session.commit()
+
 
 		return({"success": "printed the form data"})
 
@@ -618,10 +694,13 @@ def verify_email ():
 			else:
 				return "incorrect code"
 
-
+@app.route('/basicchat/', strict_slashes=False, methods=['GET', 'POST'])
+def basicchat ():
+	if request.method == "GET":
+		return render_template("basicchat.html")
 
 
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', port='5000')
+	socketio.run(app, host='0.0.0.0', port='5000')

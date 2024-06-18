@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <style>
+        .chat-container {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll; /* Enable scrolling for long chats */
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Chat</h1>
+    <div class="chat-container" id="chat-container"></div>
+    <input type="text" id="message-input" placeholder="Enter your message">
+    <button id="send-button">Send</button>
+
+    <script>
+
+		const socket = io(); // Connect to the server
+
+		const chatContainer = document.getElementById('chat-container');
+		const messageInput = document.getElementById('message-input');
+		const sendButton = document.getElementById('send-button');
+
+		sendButton.addEventListener('click', () => {
+			const message = messageInput.value;
+			if (message.trim()) {  // Send only messages with non-empty content
+				socket.emit('message', message);
+				messageInput.value = ''; // Clear input field after sending
+			}
+		});
+
+		socket.on('message', (message) => {
+			const newMessage = document.createElement('p');
+			newMessage.classList.add('message');
+			newMessage.textContent = message;
+			chatContainer.appendChild(newMessage);
+			chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom for new messages
+		});
+    </script>
+</body>
+</html>

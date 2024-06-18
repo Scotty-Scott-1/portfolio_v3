@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const home = document.getElementById("home");
 	const candidate = document.querySelectorAll(".card");
+	const socket = io(); // Connect to the server
 
 
 	home.addEventListener("click", () => {
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			// Send match ID server side as an arg //
 			const id = candidate.querySelector(".not_visable")
 			const match_id = id.textContent
+
 			fetch(`/message/?match_id=${match_id}`, {
 				method: "GET",
 				headers: {"Content-Type": "application/json"}

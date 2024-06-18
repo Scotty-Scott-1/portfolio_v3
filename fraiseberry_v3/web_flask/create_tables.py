@@ -41,6 +41,7 @@ class Users(Base):
     age = Column(Integer)
     profile_pic_path = Column(String(500))
     verification_code = Column(Integer)
+    is_active = Column(Boolean, nullable=False, server_default="0")
 
 class User_preferences(Base):
     """defines attribues for the User_preferences Class"""
