@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const userIcon = document.getElementById("user_icon");
 	const mailIcon = document.getElementById("notifications");
 	const messageIcon = document.getElementById("message");
+	const socket = io(); // Connect to the server
 
 	popbutton.addEventListener("click", () => {
 		showPopover();

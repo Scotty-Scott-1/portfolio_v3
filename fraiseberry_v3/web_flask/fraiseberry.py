@@ -631,21 +631,6 @@ def messsage ():
 
 
 		return render_template('messages.html', match_user_name=match_user_name, match_id=match_id, this_user_id=this_user, combined=combined)
-	if request.method == "POST":
-
-		match_id = int(request.args.get('match_id'))
-		form_data = request.json
-
-		with Session() as session:
-			new_message = Messages()
-			new_message.sender_id = this_user
-			new_message.receiver_id = match_id
-			new_message.content = form_data["text"]
-			session.add(new_message)
-			session.commit()
-
-
-		return({"success": "printed the form data"})
 
 # On GET: Check if email has been verified
 # On POST: Enter the verification code

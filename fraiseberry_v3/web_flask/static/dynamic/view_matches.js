@@ -2,8 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	const home = document.getElementById("home");
 	const candidate = document.querySelectorAll(".card");
-	const socket = io(); // Connect to the server
-
 
 	home.addEventListener("click", () => {
 		window.location.href = '/dashboard/';
