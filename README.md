@@ -1,6 +1,6 @@
 # Fraiseberry
 
-## inntroduction
+## Introduction
 The purpose is to connect those who are looking for romantic relationships or friendship and to facilitate correspondence between the matched pair. The search algorithm presents the user with a list of candidates according to their preferences; where the user can then like or pass the candidate. If two users like each other a match is initiated. A match can de deleted.
 
 https://medium.com/@6799/fraiseberry-com-match-making-eb6674bc2696
@@ -41,6 +41,10 @@ Please follow the following steps:
 * Click on the heart icon a generate a list of candidates
 * Click on the message icon to view matches
 
+## Challenges
+
+One of the main challenges was the use of autmated emails in the email verification processes. Sending emails goes against the terms and conditions of a free google account. A paid business account will need to be implemented in the next version.
+
 ## Contributing
 
 Fork the repository.
@@ -51,8 +55,10 @@ Submit a pull request with a clear description of your changes.
 
 ## Related projects
 
-Coming soon Fraiseberry V3 intended for public release.
+Coming soon Fraiseberry V4 intended for public release.
 
 ## Authors
+
+Currently studying Cyber Security at Holberton and looking for job oppourtunies.
 
 https://www.linkedin.com/in/solomon-william-b88401a3
